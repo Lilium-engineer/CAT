@@ -1,0 +1,49 @@
+/* 第一讲*/
+use AdventureWorks;
+/*移动到特定表空间*/
+select * from HumanResources.Employee;
+select NationalIDNumber, VacationHours, Vacationhours+900 from HumanResources.Employee;
+/* 使用了表达式*/
+
+--Alias 别名的使用--
+
+select NationalIDNumber, VacationHours, Vacationhours+900 as longholiday from HumanResources.Employee;
+/* AS之后是别名*/
+select NationalIDNumber, VacationHours, Vacationhours+900 longholiday from HumanResources.Employee;
+/* 无逗号，无AS 会返回以空格后的词为别称，以空格前列为内容的列。*/
+select NationalIDNumber, VacationHours, Vacationhours+900 as long holiday from HumanResources.Employee; 
+/* 报错-有空格就会让SQL默认断句*/
+select NationalIDNumber, VacationHours, Vacationhours+900 as "long holiday" from HumanResources.Employee;
+/* 加上引号让SQL正确判断，对T-sql而言也可以加上[]*/
+select AdventureWorks.HumanResources.Employee.NationalIDNumber, HumanResources.Employee.VacationHours from HumanResources.Employee;
+/*查询列的时候可以带上表空间.表名*/
+select AdventureWorks.HumanResources.Employee.NationalIDNumber, HumanResources.Employee.VacationHours;
+/*报错-The multi-part identifier "HumanResources.Employee.VacationHours" could not be bound.*/
+/*即使带上了表空间.表名，from也不能省略。*/
+select "H.E".NationalIDNumber, "H.E".VacationHours from HumanResources.Employee AS "H.E";
+/*给表别名，注意.和"",这是容易报错的点。*/
+/*如果给了表别名，那么查询的时候需要使用同样的别名。*/
+/*如果使用. 则需要让sql明白是表名还是表空间.表名*/
+select HumanResources.Employee.NationalIDNumber, HumanResources.Employee.VacationHours from HumanResources.Employee AS "H.E";
+/*报错- The multi-part identifier "HumanResources.Employee.NationalIDNumber" could not be bound.*/
+/* 查询时需要同样别名。*/
+select H.E.NationalIDNumber, H.E.VacationHours from HumanResources.Employee AS "H.E";
+/*报错-  . 太多，SQL陷入混乱*/
+select NationalIDNumber, VacationHours from HumanResources.Employee AS H.E;
+/*报错- SQL对别名感到困惑，是否是表空间。表名？？*/
+select NationalIDNumber, VacationHours from HumanResources.Employee "H.E";
+/* 也可以省略AS*/
+/*表空间似乎是无法起别名的*/
+/*Note：在oracle的PL-sql中， 定义列名的别名必须用AS而表名的别名必须是空格。在T-sql中As和空格中任意一个都可以对列名或表名起效。*/
+/*规范：统一一下的话，我本人就选择as定义列的alias，空格定义表的alias。*/
+
+--concatenation Operator 级联算符--
+
+SELECT FirstName + LastName AS "Full Name" FROM Person.Person;
+/*将两列的值合并，并且输出到 Full Name 列。*/
+/*注意了，这种输出只是单纯合并，没有格式可言。*/
+
+--Literal Character Strings--
+
+SELECT LastName +', ' + FirstName AS "Full Name" FROM Person.Person;
+/* 于输出中加入某些字符，提高可读性。*/
