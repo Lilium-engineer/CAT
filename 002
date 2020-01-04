@@ -1,0 +1,48 @@
+/*第六讲*/
+--Duplicate Row 消除重复行--
+SELECT * FROM Person.Address;
+SELECT City, PostalCode FROM Person.Address;
+/*由于有些城市中有复数个人员地址，会有重复的行。如果仅确认哪些省份有人员分布，会很不方便。*/
+SELECT DISTINCT City, PostalCode FROM Person.Address;
+/*查询返回行数从上一条的19614条变成673条，去除了所有重复行*/
+SELECT DISTINCT AddressLine1, City, PostalCode FROM Person.Address;
+/*只要有一列没有重复，就不会被去除。*/
+
+-- 限定条件查询--
+SELECT * FROM Person.Address WHERE City = 'Berlin';
+/*仅查询Berlin市的地址*/
+SELECT * FROM Person.Address WHERE ModifiedDate BETWEEN '20100523' AND '20130523';
+/*查询一个范围*/
+SELECT * FROM Person.Address WHERE AddressLine2 IS NULL;
+SELECT * FROM Person.Address WHERE AddressLine2 IS NOT NULL;
+/*注意 NULL 是无法用 = 和 <> 来判断的。因为NULL是个状态不是值。*/
+SELECT * FROM Person.Address WHERE ModifiedDate <= '20100523';
+/* <= | >= | = | < | > 一些判断符号。*/
+SELECT * FROM Person.Address WHERE City IN ('Berlin', 'Paris', 'Bothell');
+/* 括号内只要有一个满足则显示，实际上是查询位于三个城市所有地址。*/
+SELECT * FROM Person.Address WHERE City = 'Berlin' AND ModifiedDate = '20130523';
+SELECT * FROM Person.Address WHERE City = 'Berlin' OR City = 'Paris';
+/*多条件查询. 日期类型可被SQL暗中与字符型互换,但不能和数值型互换。*/
+SELECT * FROM Person.Address WHERE ModifiedDate BETWEEN '20100523' AND '20130523';
+/*范围查询，两者之间包含两者。*/
+SELECT * FROM Person.Address WHERE City LIKE 'B%';
+SELECT * FROM Person.Address WHERE City LIKE '_____';
+SELECT * FROM Person.Address WHERE City LIKE '_a_e%';
+SELECT * FROM Person.Address WHERE City LIKE '_a_e_';
+/*模糊查询，%--含有某字符，_--缺任意字符；*/
+/*第一个查了城市名开头为B的所有内容。第二个则查了城市名长度为5的行。*/
+/*第三个查询了第二字母为a,第四字母为e的城市。第四个查询了第二字母为a,第四字母为e，总长度为5的城市*/
+SELECT * FROM Person.Address WHERE City LIKE '[bp]%';
+/*查询了以B或P开头的城市。*/
+SELECT * FROM Person.Address WHERE City LIKE '[b-p]%';
+/*查询了以B到P开头的城市。*/
+SELECT * FROM Person.Address WHERE City LIKE '[^b-p]%';
+/*查询了不以B到P开头的城市。*/
+SELECT * FROM Person.Address WHERE City LIKE '[^c-r]e_l[ij]%';
+/*一个可执行的花式操作*/
+
+/*如果查询中下划线和百分号需要保持它们原本的字符状态要怎么办？*/
+SELECT * FROM Person.Address WHERE City LIKE '[^c-r]e_l[ij]\%' ESCAPE '\';
+/*设置\为转义字符，此字符后的特殊字符将不具备特殊含义。在这个例子中%将作为一个字符。*/
+/*由于不含有满足条件的带%的城市名，查询结果为空。*/
+/*建议使用\符号，因为在其他语言中，\默认为转义符号*/
